@@ -110,4 +110,129 @@ Mini ERP
 | `ventas` 1..1 `ingresos` | Cada venta genera un ingreso automático |
 | `gastos` y `presupuestos` | Se relacionan en reportes (no FK directa) |
 
-fecha_fin	DATE	Fecha de fin del período
+# ⚙️ Requisitos Funcionales — NipponStore
+
+---
+
+## 🏷️ 1. Módulo de Categorías
+
+### RF1.1 — Crear categoría
+El sistema debe permitir **registrar una nueva categoría** indicando su nombre y descripción.  
+**Ejemplo:** “Papelería”, “Ropa”, “Figuras de anime”.
+
+### RF1.2 — Listar categorías
+El sistema debe mostrar una **lista de todas las categorías activas** para poder asignarlas a productos o filtrarlas.
+
+### RF1.3 — Editar categoría
+El sistema debe permitir **modificar el nombre o la descripción** de una categoría existente.
+
+### RF1.4 — Desactivar categoría
+El usuario puede **desactivar una categoría**, lo que la oculta del selector de productos, pero conserva su historial.
+
+---
+
+## 📦 2. Módulo de Productos (Inventario)
+
+### RF2.1 — Registrar producto
+El sistema debe permitir **crear un producto** con nombre, categoría, precios, stock inicial y fecha de ingreso.  
+Al guardar el producto, debe generarse automáticamente un **MovimientoStock (entrada)** para reflejar su stock inicial.
+
+### RF2.2 — Editar producto
+El usuario puede **actualizar la información** de un producto (nombre, precios, categoría, stock).
+
+### RF2.3 — Eliminar o desactivar producto
+El sistema debe permitir **desactivar un producto** para ocultarlo de las ventas, pero sin eliminarlo del historial.
+
+### RF2.4 — Listar productos
+El usuario puede ver un **listado completo de productos**, con opciones de **filtrar por categoría, nombre o stock**.
+
+### RF2.5 — Ajustar stock
+El usuario puede **aumentar o disminuir stock manualmente**, especificando el motivo.  
+Cada ajuste genera un **MovimientoStock (tipo “ajuste”)**.
+
+### RF2.6 — Ver historial de movimientos
+El usuario puede consultar los **movimientos de stock** de cada producto (entradas, salidas, ajustes) ordenados por fecha.
+
+---
+
+## 🧾 3. Módulo de Ventas
+
+### RF3.1 — Registrar venta
+El sistema debe permitir **crear una nueva venta**, seleccionando productos, cantidades y método de pago.  
+Al confirmar:
+- Se crea un registro en `ventas`.
+- Se crean los registros correspondientes en `venta_items`.
+- Se genera un **MovimientoStock (salida)** por cada producto.
+- Se genera automáticamente un **Ingreso** con origen `venta`.
+
+### RF3.2 — Consultar historial de ventas
+El usuario puede **ver todas las ventas realizadas**, con filtros por fecha, cliente o método de pago.
+
+### RF3.3 — Ver detalle de venta
+El usuario puede **abrir una venta específica** para ver los productos vendidos y su detalle (`venta_items`).
+
+### RF3.4 — Anular venta
+El sistema debe permitir **anular una venta**, lo cual:
+- Cambia su estado a `anulada`.
+- Crea movimientos inversos en `movimientos_stock` (entradas).
+- Reversa el ingreso asociado (crea uno negativo o marca como revertido).
+
+---
+
+## 💰 4. Módulo de Finanzas
+
+### RF4.1 — Registrar gasto
+El usuario puede **registrar un gasto** especificando fecha, categoría, monto y descripción.
+
+### RF4.2 — Registrar ingreso manual
+Además de los ingresos por ventas, el usuario puede **crear ingresos adicionales**, por ejemplo “inversión” o “devolución”.
+
+### RF4.3 — Ver lista de ingresos y gastos
+El sistema debe mostrar los **ingresos y gastos registrados**, con posibilidad de **filtrar por fecha o categoría**.
+
+### RF4.4 — Consultar resumen financiero
+El usuario puede ver un **resumen mensual** con:
+- Total de ingresos  
+- Total de gastos  
+- Utilidad neta *(ingresos - gastos)*
+
+---
+
+## 📊 5. Módulo de Presupuestos
+
+### RF5.1 — Crear presupuesto
+Permite **definir un presupuesto** con nombre, monto planeado y periodo de fechas (inicio y fin).
+
+### RF5.2 — Actualizar monto real
+El usuario puede **ingresar el monto real gastado o ahorrado** al finalizar el periodo.
+
+### RF5.3 — Comparar presupuesto
+El sistema debe **calcular y mostrar la diferencia** entre lo planeado y lo real, tanto en pesos como en porcentaje.
+
+---
+
+## 📈 6. Módulo de Dashboard
+
+### RF6.1 — Ver resumen general
+El dashboard principal debe mostrar:
+- Total de ventas del mes  
+- Total de gastos del mes  
+- Balance (ganancia neta)  
+- Productos con bajo stock (por debajo de cierto umbral, ej. 5 unidades)  
+- Gráfica de ventas por día o semana  
+
+### RF6.2 — Alertas
+El sistema debe mostrar **alertas visuales** si:
+- Algún producto tiene bajo stock.  
+- Hay un presupuesto excedido.
+
+---
+
+## 👩‍💻 7. Módulo de Usuario (opcional para más adelante)
+
+### RF7.1 — Autenticación
+El sistema debe permitir **iniciar sesión** con correo y contraseña, usando JWT.
+
+### RF7.2 — Perfil
+Debe mostrar **información del usuario autenticado** (nombre, correo, fecha de registro).
+
