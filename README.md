@@ -1,17 +1,29 @@
 # Nikistore
 Mini ERP
-## 🏷️ Tabla: productos
+## 🏷️ Tabla: productos 
 
 | Campo | Tipo | Descripción |
 |--------|------|-------------|
 | id | INTEGER (PK, autoincrement) | Identificador único del producto |
 | nombre | TEXT | Nombre del producto |
-| categoria | TEXT | Categoría o tipo (ej. figuras, papelería, ropa) |
+| categoria_id | INTEGER (FK → categorias.id) | Categoría a la que pertenece el producto |
 | precio_compra | REAL | Costo de adquisición |
 | precio_venta | REAL | Precio al público |
 | stock | INTEGER | Unidades disponibles |
 | fecha_ingreso | DATETIME | Fecha en que se agregó el producto |
 | activo | BOOLEAN (default TRUE) | Si el producto está disponible para la venta |
+
+
+
+## 🗂️ Tabla: categorias
+
+| Campo | Tipo | Descripción |
+|--------|------|-------------|
+| id | INTEGER (PK, autoincrement) | Identificador único de la categoría |
+| nombre | TEXT (UNIQUE) | Nombre de la categoría (ej. "Figuras", "Papelería", "Moda") |
+| descripcion | TEXT (nullable) | Descripción breve o uso de la categoría |
+| fecha_creacion | DATETIME | Fecha de registro de la categoría |
+| activa | BOOLEAN (default TRUE) | Si la categoría está disponible |
 
 
 ## 🧾 Tabla: ventas
