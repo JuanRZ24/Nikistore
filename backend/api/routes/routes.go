@@ -9,4 +9,5 @@ import (
 func RegisterRoutes(mux *http.ServeMux) {
 	//Categorias
 	mux.HandleFunc("/categorias",handlers.CategoriaHandler)
+	mux.HandleFunc("/categorias/", handlers.CategoriaHandler)
 }

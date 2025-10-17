@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"Nikistore/config"
 	"Nikistore/api/models"
+	"strings"
+	"strconv"
 )
 
 func CategoriaHandler(w http.ResponseWriter, r *http.Request){
@@ -14,6 +16,8 @@ func CategoriaHandler(w http.ResponseWriter, r *http.Request){
 		crearCategoria(w,r)
 	case http.MethodGet:
 		obtenerCategorias(w,r)
+	case http.MethodDelete:
+		eliminarCategorias(w,r)
 	default:
 		http.Error(w,"Metodo no permitido",http.StatusMethodNotAllowed)
 	}
@@ -67,4 +71,45 @@ func obtenerCategorias(w http.ResponseWriter, r *http.Request){
 		"data": categorias, 
 	})
 
+}
+
+
+func eliminarCategorias(w http.ResponseWriter, r *http.Request){
+	var categoria models.Categoria
+
+
+	parts := strings.Split(r.URL.Path, "/")
+
+	if len(parts) < 3 {
+		http.Error(w, "Falta el ID en la ruta", http.StatusBadRequest)
+		return
+	}
+
+	idStr := parts[2]
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		http.Error(w,"ID invalido", http.StatusBadRequest)
+		return
+	}
+
+	result := config.DB.First(&categoria, id)
+	if result.Error != nil {
+		http.Error(w,"No se encontro la categoria", http.StatusNotFound)
+		return
+	}
+
+	if err := config.DB.Delete(&categoria).Error; err != nil{
+		http.Error(w, "Error al eliminar la categoria", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"message": "Categoria eliminada",
+		"data": id, 
+	})
+
+
+	
 }
