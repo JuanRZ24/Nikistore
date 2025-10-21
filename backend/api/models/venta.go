@@ -12,4 +12,6 @@ type Venta struct {
 	Impuestos   float64   `gorm:"default:0"`
 	Total       float64   `gorm:"not null"`
 	Estado     string `gorm:"size:20;default:'completada'"`
+	VentaItems []VentaItem `gorm:"foreignKey:VentaID"`
+
 }
