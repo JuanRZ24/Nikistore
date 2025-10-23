@@ -17,4 +17,7 @@ func RegisterRoutes(mux *http.ServeMux) {
 
 	mux.HandleFunc("/venta", handlers.VentaHandler)
 	mux.HandleFunc("/venta/", handlers.VentaHandler)
+
+	mux.HandleFunc("/compra", handlers.CompraHandler)
+	mux.HandleFunc("/compra/", handlers.CompraHandler)
 }

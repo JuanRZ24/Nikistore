@@ -52,7 +52,8 @@ func listarProductos(w http.ResponseWriter, r *http.Request){
 	var productos []models.Producto
 
 
-	result := config.DB.Find(&productos)
+	result := config.DB.Preload("Categoria").
+	Find(&productos)
 
 	if result.Error != nil {
 		http.Error(w, "Error al obtener los productos", http.StatusInternalServerError)
@@ -70,10 +71,7 @@ func listarProductos(w http.ResponseWriter, r *http.Request){
 	}
 
 	w.Header().Set("Content-type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"message": "Productos obtenidos correctamente",
-		"data": productos,
-	})
+	json.NewEncoder(w).Encode(productos)
 }
 
 
